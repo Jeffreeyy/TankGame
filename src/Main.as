@@ -10,6 +10,7 @@ package
 	 */
 	public class Main extends Sprite
 	{
+		private var bg:Background;
 		public static var tank1:Tank;
 		private var enemies:Array;
 		private var bullets:Vector.<Bullet>;
@@ -26,6 +27,9 @@ package
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
+			
+			bg = new Background();
+			addChild(bg);
 			
 			tank1 = new Tank();
 			enemies = new Array();
@@ -71,52 +75,84 @@ package
 		
 		private function loop(e:Event):void
 		{
-			for (var i:int = 0; i < bullets.length; i++)
-			{
-				var toRemove:Boolean = false;
-				
-				bullets[i].update();
-				for (var j:int = 0; j < chests.length; j++)
+			if (tank1!=null){
+			
+				for (var i:int = 0; i < bullets.length; i++)
 				{
-					if (chests[j].hitTestPoint(bullets[i].x, bullets[i].y, true))
+					var toRemove:Boolean = false;
+					
+					bullets[i].update();
+					for (var j:int = 0; j < chests.length; j++)
 					{
-						toRemove = true;
-						chests[j].lives--;
-						if (chests[j].lives <= 0)
+						if (chests[j].hitTestPoint(bullets[i].x, bullets[i].y, true))
 						{
-							removeChild(chests[j]);
-							chests.splice(j, 1);
+							toRemove = true;
+							chests[j].lives--;
+							if (chests[j].lives <= 0)
+							{
+								removeChild(chests[j]);
+								chests.splice(j, 1);
+							}
 						}
 					}
+					for (var k:int = 0; k < enemies.length; k++ )
+					{
+						if (enemies[k].hitTestPoint(bullets[i].x, bullets[i].y, true))
+						{
+							toRemove = true;
+							enemies[k].lives--;
+							if (enemies[k].lives <= 0)
+							{
+								enemies[k].destroy();
+								removeChild(enemies[k]);
+								enemies.splice(k, 1);
+							}
+						}
+					}
+					if (tank1.hitTestPoint(bullets[i].x, bullets[i].y, true))
+					{
+						toRemove = true;
+						tank1.lives--;
+						if (tank1.lives <= 0 ) 
+						{
+							tank1.destroy();
+							removeChild(tank1);
+							tank1 = null;
+							break;
+						}
+						
+						
+					}
+					
+					if (bullets[i].x > stage.stageWidth || bullets[i].x < 0 || bullets[i].y > stage.stageHeight || bullets[i].y < 0)
+					{
+						toRemove = true;
+					}
+					
+					if (toRemove)
+					{
+						removeChild(bullets[i]);
+						bullets.splice(i, 1);
+					}
+					
+					
 				}
-				
-				
-				
-				if (bullets[i].x > stage.stageWidth || bullets[i].x < 0 || bullets[i].y > stage.stageHeight || bullets[i].y < 0)
-				{
-					toRemove = true;
-				}
-				
-				if (toRemove)
-				{
-					removeChild(bullets[i]);
-					bullets.splice(i, 1);
-				}
-				
-				
 			}
 		}
 		
 		private function createBullet(e:ShootEvent):void
 		{
-			var r:Number = e.shooter.turretAngle + e.shooter.rotation;
-			var tPos:Point = new Point(e.shooter.x, e.shooter.y);
-			var b:Bullet = new Bullet(r, tPos);
-			
-			bullets.push(b);
-			addChild(b);
-			b.scaleX = b.scaleY = tank1.scaleX;
-			//b.rotation = tank1.turretAngle + tank1.rotation;
+			if (tank1 != null)
+			{
+				var r:Number = e.shooter.turretAngle + e.shooter.rotation;
+				var tPos:Point = new Point(e.shooter.x, e.shooter.y);
+				var b:Bullet = new Bullet(r, tPos);
+				
+				bullets.push(b);
+				addChild(b);
+				b.scaleX = b.scaleY = tank1.scaleX;
+				//b.rotation = tank1.turretAngle + tank1.rotation;
+			}
 		}
 	
 	}

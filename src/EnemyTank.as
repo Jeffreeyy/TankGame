@@ -25,9 +25,19 @@ package
 		}
 		override public function loop(e:Event):void
 		{
+			if (Main.tank1 != null)
+			{
 			targetPosition.x = Main.tank1.x - this.x;
 			targetPosition.y = Main.tank1.y - this.y;
+			}
 			super.loop(e);
+		}
+		override public function destroy():void
+		{
+			shootTimer.removeEventListener(TimerEvent.TIMER, shoot);
+			shootTimer.stop();
+			shootTimer = null;
+			super.destroy();
 		}
 	}
 

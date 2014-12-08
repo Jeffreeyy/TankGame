@@ -13,6 +13,7 @@ package
 		protected var tankTurretArt:TankTurretArt;
 		public var turretAngle:Number = 0;
 		public var targetPosition:Point;
+		public var lives:int = 10;
 		
 		
 		public function TankBase() 
@@ -45,6 +46,10 @@ package
 			
 							// -180 tot 180
 							// Radian de rotatie moet omgezet gaan worden naar radians.
+		}
+		public function destroy():void
+		{
+			this.removeEventListener(Event.ENTER_FRAME, loop);
 		}
 		
 	}

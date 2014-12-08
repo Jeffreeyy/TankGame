@@ -166,6 +166,13 @@ package
 				controlDir.x = 0;
 			}
 		}
+		override public function destroy():void 
+		{
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			stage.removeEventListener(MouseEvent.CLICK, onClick);
+			super.destroy();
+		}
 		
 	}
 
